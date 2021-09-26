@@ -1,0 +1,91 @@
+sisfall_activities = {
+    'D01': 0, 'F01': 19,
+    'D02': 1, 'F02': 20,
+    'D03': 2, 'F03': 21,
+    'D04': 3, 'F04': 22,
+    'D05': 4, 'F05': 23,
+    'D06': 5, 'F06': 24,
+    'D07': 6, 'F07': 25,
+    'D08': 7, 'F08': 26,
+    'D09': 8, 'F09': 27,
+    'D10': 9, 'F10': 28,
+    'D11': 10, 'F11': 29,
+    'D12': 11, 'F12': 30,
+    'D13': 12, 'F13': 31,
+    'D14': 13, 'F14': 32,
+    'D15': 14, 'F15': 33,
+    'D16': 15,
+    'D17': 16,
+    'D18': 17,
+    'D19': 18,
+}
+
+sisfall_subjects = {
+    'SA01': 0, 'SE01': 23,
+    'SA02': 1, 'SE02': 24,
+    'SA03': 2, 'SE03': 25,
+    'SA04': 3, 'SE04': 26,
+    'SA05': 4, 'SE05': 27,
+    'SA06': 5, 'SE06': 28,
+    'SA07': 6, 'SE07': 29,
+    'SA08': 7, 'SE08': 30,
+    'SA09': 8, 'SE09': 31,
+    'SA10': 9, 'SE10': 32,
+    'SA11': 10, 'SE11': 33,
+    'SA12': 11, 'SE12': 34,
+    'SA13': 12, 'SE13': 35,
+    'SA14': 13, 'SE14': 36,
+    'SA15': 14, 'SE15': 37,
+    'SA16': 15,
+    'SA17': 16,
+    'SA18': 17,
+    'SA19': 18,
+    'SA20': 19,
+    'SA21': 20,
+    'SA22': 21,
+    'SA23': 22,
+}
+
+umafall_activities = {
+    'Aplausing': 0,
+    'Bending': 1,
+    'GoDownstairs': 2,
+    'GoUpstairs': 3,
+    'HandsUp': 4,
+    'Hopping': 5,
+    'Jogging': 6,
+    'LyingDownOnABed': 7,
+    'MakingACall': 8,
+    'OpeningDoor': 9,
+    'SittingGettingUpOnAChair': 10,
+    'Walking': 11,
+    'backwardFall': 12,
+    'forwardFall': 13,
+    'lateralFall': 14
+}
+
+mobifall2_activities = {
+    'STD': 0,
+    'WAL': 1,
+    'JOG': 2,
+    'JUM': 3,
+    'STU': 4,
+    'STN': 5,
+    'SCH': 6,
+    'CSI': 7,
+    'CSO': 8,
+    'FOL': 9,
+    'FKL': 10,
+    'BSC': 11,
+    'SDL': 12
+}
+
+utd_transitions_falls_activities = {
+    'a1': 0,
+    'a2': 1,
+    'a3': 2,
+    'a4': 3,
+    'a5': 4,
+    'a6': 5,
+    'a7': 6
+}
