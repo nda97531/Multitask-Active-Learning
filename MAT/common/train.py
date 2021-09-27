@@ -37,13 +37,15 @@ def mat_train(model: nn.Module,
     # set device
     model = model.to(DEVICE)
 
+    # create folders to save results
+    if curve_save_name is not None:
+        curve = []
+        os.makedirs(os.path.split(curve_save_name)[0], exist_ok=True)
+    os.makedirs(os.path.split(weights_save_name)[0], exist_ok=True)
+
     best_metric = 0.
     org_patience = patience
     last_epoch_save_name = None
-
-    if curve_save_name is not None:
-        curve = []
-
     for epoch in tqdm(range(1, max_epoch + 1)):
         model = model.train()
 
@@ -173,5 +175,6 @@ def mat_train(model: nn.Module,
                     break
 
     if curve_save_name is not None:
+        os.makedirs(os.path.split(curve_save_name)[0], exist_ok=True)
         training_curve = pandas.DataFrame.from_records(curve)
         training_curve.to_csv(f"{curve_save_name}.csv", index=False)
