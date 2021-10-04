@@ -30,7 +30,8 @@ def mat_train(model: nn.Module,
         3 columns are:
             - categorical label
             - sample weight
-            - multi-task mask (0 or 1, samples having mask=0 will be in the first tensor of model's output,
+            - multi-task mask (0 for source and 1 for target,
+                samples having mask=0 will be in the first tensor of model's output,
                 and mask=1 will be in the second one)
     :param weights_save_name: filename to save weight
     :param only_save_best_of_best: whether to save only the best checkpoint
