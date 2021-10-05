@@ -1,61 +1,31 @@
 import numpy as np
 import torch as tr
+from typing import Union
 from MAT import logger
 
 
-def sparse_2_onehot(label, n_class):
+def sparse_2_onehot(label: np.ndarray, n_class: int, dtype=np.float32) -> np.ndarray:
     """
-    label shape (n,)
+    Convert categorical label to one-hot encoded label
+    :param label: array shape [num label]
+    :param n_class: number of class
+    :param dtype: data type of output one-hot label
+    :return: one-hot encoded label, array shape [num label, num class]
     """
-    onehot = np.zeros([len(label), n_class], dtype=np.float32)
-    onehot[np.arange(len(label)), label] = 1.
+    onehot = np.zeros([len(label), n_class], dtype=dtype)
+    onehot[np.arange(len(label)), label] = 1
     return onehot
 
 
-def load_dataset_single_file(data_file, p_lb_file, list_valid_subject_id, is_train_set,
-                             data_channels=(3, 3),
-                             normalize=True,
-                             min_vals=[], max_vals=[],
-                             lb_col_in_p_lb=None):
-    p_lb = np.load(p_lb_file)
-    select_index = np.isin(p_lb[:, 0], list_valid_subject_id)
-    if is_train_set:
-        select_index = ~select_index
-    label = p_lb[select_index]
-
-    if lb_col_in_p_lb is not None:
-        label = label[:, lb_col_in_p_lb]
-
-    data_array = np.load(data_file)
-    if np.sum(data_channels) != data_array.shape[-1]:
-        raise ValueError('number of channels not match!')
-
-    return_array = []
-    for index, n_channel in enumerate(data_channels):
-        first_col = np.sum(data_channels[:index], dtype=int)
-        this_data = data_array[:, :, first_col:first_col + n_channel]
-
-        if normalize:
-            if len(min_vals) < len(data_channels) or len(max_vals) < len(data_channels):
-                min_vals.append(this_data.min())
-                max_vals.append(this_data.max())
-            this_data = (this_data - min_vals[index]) / (max_vals[index] - min_vals[index])
-        return_array.append(this_data[select_index])
-
-    return_array.append(label)
-
-    if is_train_set and normalize:
-        return return_array, min_vals, max_vals
-    else:
-        return return_array
-
-
-def sliding_window(time_series_data, window_size, step_size, count_last_lines=False):
+def sliding_window(time_series_data: np.ndarray, window_size: int, step_size: int,
+                   count_last_lines: bool = False) -> np.ndarray:
     """
-    :param time_series_data: shape (timestep, channel)
-    :param window_size: window size in lines
-    :param step_size: step size in lines
+    Slide window from a time series and yield window by window.
+    :param time_series_data: shape (num time steps, *)
+    :param window_size: window size
+    :param step_size: step size
     :param count_last_lines: still yield the last lines of sequence when it's shorter than step size
+    :return: yield window by window, each one has shape [window size, *]
     """
     first_index = 0
     while True:
@@ -74,7 +44,7 @@ def sliding_window(time_series_data, window_size, step_size, count_last_lines=Fa
         first_index += step_size
 
 
-def class_weight(label, return_type, rescale_by='mean'):
+def class_weight(label, return_type, rescale_by='mean') -> Union[dict,]:
     """
     Calculate class weight based on quantity
     :param label: sparse label array shape [num instances, ]
@@ -87,7 +57,7 @@ def class_weight(label, return_type, rescale_by='mean'):
     values, counts = np.unique(label, return_counts=True)
 
     # calculate class weight
-    cweight = 1. * len(label) / counts
+    cweight = len(label) / counts
 
     # rescale class weight
     if rescale_by == 'min':
@@ -105,42 +75,16 @@ def class_weight(label, return_type, rescale_by='mean'):
         raise ValueError('return_type is "array" or "dict"')
 
 
-def check_std(window, min_std_allowed):
-    """
-    :param window: shape (timestep, channel)
-    :return: boolean
-    """
-    return window.std(axis=0).mean() >= min_std_allowed
-
-
-def closest_greater_index_in_array(array, value):
-    diff = array - value
-    greater_index = np.where(diff >= 0)[0][0]
-    return greater_index
-
-
-def closest_less_index_in_array(array, value):
-    diff = array - value
-    less_index = np.where(diff <= 0)[0][-1]
-    return less_index
-
-
-def closest_index_in_array(array, value):
-    diff = np.abs(array - value)
-    return np.argmin(diff)
-
-
 def interp_1d(observed_data: np.ndarray,
               new_len: int = None,
               observed_timestamp: np.ndarray = None):
     """
-    1D linear interpolation
-    Args:
-        observed_data: shape [len, ]
-        new_len: integer
-        observed_timestamp: shape [len, ]
-    Returns:
-        shape [new_len, ]
+    1D linear interpolation.
+    :param observed_data: shape [len, ]
+    :param new_len: integer
+    :param observed_timestamp: shape [len, ], a timestamp for each input observed sample;
+        if not specified, timestamps are assumed to be constant
+    :return: array shape [new_len, ]
     """
     if new_len is None and observed_timestamp is None:
         logger.warning('Both new_len and timestamp are None, interpolation will not take effect.')
@@ -160,15 +104,14 @@ def interp_1d(observed_data: np.ndarray,
 
 def interp_1ds(observed_data: np.ndarray,
                new_len: int = None,
-               observed_timestamp: np.ndarray = None):
+               observed_timestamp: np.ndarray = None) -> np.ndarray:
     """
     Apply interp_1d on all input feature.
-    Args:
-        observed_data: shape [len, feature]
-        new_len: integer
-        observed_timestamp: shape [len, ]
-    Returns:
-        shape [new len, feature]
+    :param observed_data: shape [len, feature], raw data
+    :param new_len: length that we want after interpolation
+    :param observed_timestamp: shape [len, ], a timestamp for each input observed sample;
+        if not specified, timestamps are assumed to be constant
+    :return: array shape [new len, feature]
     """
     if len(observed_data.shape) != 2:
         raise ValueError(
@@ -188,11 +131,3 @@ def interp_1ds(observed_data: np.ndarray,
         interp_data.append(interp_1d(observed_data[:, i], new_len, observed_timestamp))
     interp_data = np.stack(interp_data, axis=1)
     return interp_data
-
-
-def torch_num_params(model):
-    keys = list(model.state_dict().keys())
-    total_params = 0
-    for key in keys:
-        total_params += tr.tensor(model.state_dict()[key].shape).prod().item()
-    return total_params
