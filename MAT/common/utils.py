@@ -44,12 +44,12 @@ def sliding_window(time_series_data: np.ndarray, window_size: int, step_size: in
         first_index += step_size
 
 
-def class_weight(label, return_type, rescale_by='mean') -> Union[dict,]:
+def class_weight(label, return_type, rescale_by='mean') -> Union[dict, np.ndarray]:
     """
     Calculate class weight based on quantity
     :param label: sparse label array shape [num instances, ]
     :param return_type: "array" or "dict"
-    :param rescale_by: "mean", "max", or "min"
+    :param rescale_by: rescaling by dividing weights by one of the  "mean", "max", or "min" value of all weights
     :return: array or dict, class weight
     """
 
