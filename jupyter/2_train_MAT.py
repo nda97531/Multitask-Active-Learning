@@ -37,7 +37,6 @@ target_train_data = np.load(os.path.join(target_data_folder, "data_train.npy"))
 target_train_label = np.load(os.path.join(target_data_folder, "p_lb_train.npy"))
 target_valid_data = np.load(os.path.join(target_data_folder, "data_valid.npy"))
 target_valid_label = np.load(os.path.join(target_data_folder, "p_lb_valid.npy"))
-np.save(os.path.join(target_data_folder, "data_valid32.npy"), target_valid_data.astype(np.float32))
 
 logger.info(f"Target train data: {target_train_data.shape}")
 logger.info(f"Target train label: {target_train_label.shape}")
